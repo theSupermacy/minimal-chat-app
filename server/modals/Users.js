@@ -35,12 +35,14 @@ class Users {
     addUser(options) {
         this.email = _.get(options, 'email')
         this.mobileNumber = _.get(options, 'mobileNumber')
+        this.name = _.get(options, 'name')
         this.userId = uuid()
         this.createdAt = moment()
         const userData = {
             email: this.email,
             mobileNumber: this.mobileNumber,
             userId: this.userId,
+            name: this.name,
             createdAt: this.createdAt
         }
         const userKey = this._getUserKey(this.userId)

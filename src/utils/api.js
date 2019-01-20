@@ -1,49 +1,50 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8000');
 import axios from 'axios'
+const chatNameSpace = openSocket('ws://localhost:3000/chat', {
+});
+
 
 export const listenToSocket = function (event, cb) {
     console.log(event)
-    socket.on(event, function (message) {
+    chatNameSpace.on(event, function (message) {
         return cb(message)
     })
 }
 
 export const sendInformation = function (event, userDetails, cb) {
-    socket.emit(event, userDetails, function (message) {
+    chatNameSpace.emit(event, userDetails, function (message) {
         console.log(message)
         return cb(message)
     })
 }
 
-export const sendChatMessage = function (chatMessage, from, to, cb) {
-    socket.emit('sendChatMessage', {
-        chatMessage,
-        from,
-        to
-    }, function (err, data) {
+export const sendChatMessage = function (payload, cb) {
+    console.log('payload', payload)
+    chatNameSpace.emit('message', payload, function (err, data) {
         console.log(data)
         return cb(data)
     })
 }
 
-socket.on('disconnect', function (err) {
+chatNameSpace.on('disconnect', function (err) {
     console.log(err)
 })
 
 
 export class MakeHttpRequest {
     constructor(url) {
-        this.url = url
+        this.url = `http://localhost:3000${url}`
+
     }
-    makeRequest(options) {
+    makeRequest(options = {}) {
         const defaultOptions = {
-            uri: this.url,
+            url: this.url,
             method: options.method || 'get',
             params: options.params,
-            body: options.body
+            data: options.body
         }
-        return axios(defaultOptions)
+        console.log(defaultOptions)
+        return axios(defaultOptions).then(data => data.data)
     }
 }
 
