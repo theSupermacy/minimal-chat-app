@@ -6,6 +6,8 @@
 
 var app = require('../app');
 var debug = require('debug')('server:server');
+var chatNameSpaceHandlers = require('./../namespace/chatNameSpace')
+var socket = require('socket.io')
 var http = require('http');
 var argv = require('minimist')(process.argv.slice(2));
 /**
@@ -19,11 +21,12 @@ var argv = require('minimist')(process.argv.slice(2));
  */
 
 var server = http.createServer(app);
+var io = socket(server)
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-const PORT  = argv['p'] || argv['port'] || 3000
+const PORT = argv['p'] || argv['port'] || 3000
 app.set('port', PORT);
 server.listen(PORT);
 server.on('error', onError);
@@ -69,3 +72,4 @@ function onListening() {
     : 'port ' + addr.port;
   console.log('Listening on ' + bind);
 }
+io.of('/chat').on('connection', chatNameSpaceHandlers)

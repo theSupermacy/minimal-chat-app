@@ -5,6 +5,9 @@ const client = redis.createClient(config)
 
 module.exports = {
     client,
+    createClient: function () {
+        return redis.createClient(config)
+    },
     set: bp.promisify(client.set).bind(client),
     get: bp.promisify(client.get).bind(client),
     hgetAll: bp.promisify(client.hgetall).bind(client),
