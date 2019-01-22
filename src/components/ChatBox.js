@@ -29,8 +29,12 @@ class ChatBox extends React.Component {
             })
         })
         sendInformation("register", { userId })
-        listenToSocket('onMessage', function (err, message) {
-            console.log(message, err)
+        listenToSocket('onMessage',  (err, message) => {
+            const messageInbox = this.state.inboxMessage
+            messageInbox.push(message)
+            this.setState({
+               inboxMessage: messageInbox 
+            })
         })
     }
     changeCurrentUser(value) {
@@ -54,6 +58,12 @@ class ChatBox extends React.Component {
             from,
             to
         }
+        const newMessage = this.state.inboxMessage
+        newMessage.push(payload)
+        this.setState({
+           message: '',
+           inboxMessage: newMessage
+        })
         sendChatMessage(payload, function (err, data) {
             console.log(data, 'testing data')
             if (!err) console.log('message send')
@@ -70,8 +80,13 @@ class ChatBox extends React.Component {
         })
     }
     showAllMessage() {
-        return this.state.inboxMessage.map(message => {
-            console.log(message)
+        return this.state.inboxMessage.map(singleMessage => {
+            let {
+                name,
+                message
+            } = singleMessage
+            if(!name)  name = "YOU"
+            return (<li>{name}: {message}</li>)
         })
     }
     render() {

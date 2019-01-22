@@ -7,7 +7,7 @@ const chatNameSpace = openSocket('ws://localhost:3000/chat', {
 export const listenToSocket = function (event, cb) {
     console.log(event)
     chatNameSpace.on(event, function (message) {
-        return cb(message)
+        return cb(null, message)
     })
 }
 
