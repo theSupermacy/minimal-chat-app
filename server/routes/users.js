@@ -7,36 +7,7 @@ const { checkSchema } = require('express-validator/check');
 
 /* GET users listing. */
 // add user validations
-router.post('/', checkSchema({
-  name: {
-    in: ['body'],
-  },
-  email: {
-    in: ['body'],
-    isEmail: {
-      errorMessage: "Invalid Email"
-    }
-  },
-  mobileNumber: {
-    in: ['body'],
-    isMobilePhone: {
-      errorMessage: "Invalid Mobile"
-    }
-  }
-}), function (req, res, next) {
-  const {
-    name,
-    email,
-    mobileNumber
-  } = req.body
-  const userObject = new User();
-  userObject.addUser({
-    name,
-    email,
-    mobileNumber
-  }).then(data => req.sendingData = data)
-    .then(() => next()).catch(next)
-}, responseSender)
+router.post('/', validators(fn),uploadFile, promiseResolver(userObject.getUserFriends), responseSender, activityTrail)
 
 router.get('/', function (req, res, next) {
   console.log('Need to Implement This')

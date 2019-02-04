@@ -13,15 +13,13 @@ module.exports = function (socket) {
         const {
             userId
         } = message
-        console.log('subscribing to ', `user:${userId}`)
-        subscriber.subscribe(`user:${userId}`)
+        subscriber.subscribe(`user:chat:${userId}`)
     })
     subscriber.on('message', function (channel, channelMessage) {
-        console.log(channel, 'channel')
         const userInformation = JSON.parse(channelMessage)
         const fromUserInformation = _.get(userInformation, ['from'])
         const message = _.get(userInformation, ['message'])
-        const userKey = `user:chat:${fromUserInformation}`
+        const userKey = `user:${fromUserInformation}`
         hgetAll(userKey).then(userData => {
             const payload = {
                 message,
